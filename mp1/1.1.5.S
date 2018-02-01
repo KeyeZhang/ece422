@@ -3,29 +3,22 @@
 
 _main:
 
-push %ebp
-mov  %esp,%ebp
+push	%ebp
+mov	%esp,%ebp
 
-mov  $0xb,%eax //execve
+sub $0x8, %esp
 
-// /* /bin/sh\0 */
-// / 2f
-// b 62
-// i 69
-// n 6e
-// / 2f
-// s 73
-// h 68
-// \ 00
+mov $filename, %ebx
 
-push $0x0068732f
-push $0x6e69622f
+mov $0x0, %ecx
+mov $0x0, %edx
 
-mov  %esp,%ebx
+mov $11, %eax
 
-mov  $0x0,%ecx
-mov  $0x0,%edx
-int  $0x80
+int $0x80
 
 leave
 ret
+
+filename:
+	.string "/bin/sh"
