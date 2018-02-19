@@ -1,0 +1,8 @@
+CREATE DATABASE project2;
+CREATE USER 'awzhang3'@'localhost' IDENTIFIED BY 'abc9b458a69523800547771ea6477accc5a767891308b0ac601f1c76e431d25f';
+
+GRANT INSERT ON *.* TO 'awzhang3'@'localhost';
+GRANT UPDATE ON *.* TO 'awzhang3'@'localhost';
+GRANT SELECT ON *.* TO 'awzhang3'@'localhost';
+
+SHOW GRANTS FOR 'awzhang3'@'localhost';
