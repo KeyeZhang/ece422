@@ -1,0 +1,5 @@
+
+if sha256(blob).hexdigest() == "46f1fbcb1d6f045ff2989d01200cbc23a8d68a5f00414ce2d9137bb05f247f7f":
+    print "I come in peace."
+else:
+    print "Prepare to be destroyed!"
