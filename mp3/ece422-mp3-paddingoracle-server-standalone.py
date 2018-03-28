@@ -55,7 +55,7 @@ def index(name):
             else:
                 response.status = 404
                 return "Incorrect ciphertext!\n"
-            
+
     except Exception, e:
         response.status = 500
         return e.message
