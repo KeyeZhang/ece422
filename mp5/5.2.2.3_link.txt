@@ -1,3 +1,8 @@
 ###Solution Example: ###
 #https://www.google.com/maps
 #https://www.cnet.com/news/
+https://www.google.com/search?client=ubuntu&channel=fs&q=hydra+tutorial&ie=utf-8&oe=utf-8
+http://www.therichest.com/rich-list/most-shocking/the-10-most-common-murder-weapons-in-the-united-states/
+http://www.amazon.com/Nerf-N-Strike-Elite-Rough-Blaster/dp/B009T45XN2
+http://www.walmart.com/ip/Nerf-N-Strike-Modulus-ECS-10-Blaster/45057744
+https://www.quora.com/What-gloves-dont-leave-any-fingerprints
